@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ziyod-bot
+    runtime: node
+    buildCommand: bash build.sh
+    startCommand: node --enable-source-maps ./artifacts/api-server/dist/index.mjs
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
