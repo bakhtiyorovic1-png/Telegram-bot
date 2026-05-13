@@ -20,7 +20,34 @@ if (!token) {
   throw new Error("TELEGRAM_BOT_TOKEN is required");
 }
 
-export const bot = new TelegramBot(token, { polling: true });
+const isProd = process.env["NODE_ENV"] === "production";
+
+export const bot = new TelegramBot(token, isProd ? {} : { polling: true });
+
+if (!isProd) {
+  bot.on("polling_error", (err) => {
+    logger.error(err, "Telegram polling error");
+  });
+  logger.info("Telegram bot started in polling mode");
+}
+
+export async function setupWebhook(): Promise<void> {
+  if (!isProd) return;
+
+  const webhookUrl =
+    process.env["RENDER_EXTERNAL_URL"] ?? process.env["WEBHOOK_URL"];
+
+  if (!webhookUrl) {
+    throw new Error(
+      "RENDER_EXTERNAL_URL or WEBHOOK_URL must be set in production",
+    );
+  }
+
+  const fullUrl = `${webhookUrl}/api/webhook`;
+  await bot.setWebHook(fullUrl);
+  const info = await bot.getWebHookInfo();
+  logger.info({ url: info.url, pending: info.pending_update_count }, "Webhook registered");
+}
 
 const RELIGIOUS_KEYWORDS = [
   "namoz", "qur'on", "quron", "hadis", "islom", "alloh", "muhammad", "hijob",
@@ -302,9 +329,3 @@ bot.on("message", async (msg) => {
     await bot.sendMessage(chatId, "Kechirasiz, hozir javob bera olmadim. Qayta urinib ko'ring.");
   }
 });
-
-bot.on("polling_error", (err) => {
-  logger.error(err, "Telegram polling error");
-});
-
-logger.info("Telegram bot started");
