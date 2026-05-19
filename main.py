@@ -23,7 +23,7 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_histories[update.effective_user.id] = []
     await update.message.reply_text("Suhbat tozalandi! 🔄")
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_message{"role": "system", "content": "You are a helpful AI assistant and professional translator. Never use markdown formatting like **, ##, $$. Use only plain text and emojis. Respond in the same language the user writes in. When translating, be precise and accurate - never confuse similar words. Translate word by word meaning correctly."}
     user_id = update.effective_user.id
     text = update.message.text
     
