@@ -23,7 +23,7 @@ async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_histories[update.effective_user.id] = []
     await update.message.reply_text("Suhbat tozalandi! 🔄")
 
-async def handle_message{"role": "system", "content": "You are a helpful AI assistant and professional translator. Never use markdown formatting like **, ##, $$. Use only plain text and emojis. Respond in the same language the user writes in. When translating, be precise and accurate - never confuse similar words. Translate word by word meaning correctly."}
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     text = update.message.text
     
@@ -40,7 +40,7 @@ async def handle_message{"role": "system", "content": "You are a helpful AI assi
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
-            {"role": "system", "content": "You are a helpful AI assistant. Never use markdown formatting like **, ##, $$. Use only plain text and emojis. Respond in the same language the user writes in."}
+            {"role": "system", "content": "You are a helpful AI assistant and professional translator. Never use markdown formatting like **, ##, $$. Use only plain text and emojis. Respond in the same language the user writes in. When translating, be precise and accurate - never confuse similar words."}
         ] + chat_histories[user_id][-10:]
     )
     
@@ -70,7 +70,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     },
                     {
                         "type": "text",
-                        "text": "Ushbu rasmdagi barcha matnlarni o'qi. Agar matn bo'lsa, avval asl matnni yoz, keyin o'zbek tiliga tarjima qil. Agar matn bo'lmasa, rasmni tasvirla."
+                        "text": "Ushbu rasmdagi barcha matnlarni o'qi. Agar matn bo'lsa, avval asl matnni yoz, keyin o'zbek tiliga aniq va to'g'ri tarjima qil - so'zlarni chalkashtirma. Agar matn bo'lmasa, rasmni tasvirla."
                     }
                 ]
             }
